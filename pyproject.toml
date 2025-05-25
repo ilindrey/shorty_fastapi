@@ -1,0 +1,103 @@
+#[build-system]
+#build-backend = "pdm.pep517.api"
+#requires = ["pdm-pep517>=1.0.0"]
+
+[project]
+authors = [
+  {name = "Andrey Ilin", email = "andreyilin@fastmail.com"}
+]
+classifiers = [
+  "Development Status :: 5 - Production/Stable",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: Implementation :: CPython",
+  "Topic :: Internet :: WWW/HTTP",
+  "Topic :: Software Development :: Libraries :: Application Frameworks",
+  "Topic :: Software Development :: Libraries :: Python Modules"
+]
+dependencies = [
+  "fastapi==0.115.12",
+  "pydantic==2.11.5"
+]
+description = "Python asynchronous I/O API client generator"
+dynamic = ["version"]
+keywords = ["async", "asyncio", "api", "fastapi"]
+license = {text = "MIT"}
+name = "shorty_fastapi"
+readme = "README.md"
+requires-python = ">=3.13"
+
+[project.optional-dependencies]
+pydantic = []
+
+[tool.coverage.report]
+# Regexes for lines to exclude from consideration
+exclude_lines = [
+  "pragma: no cover",
+  # Don't complain about missing debug-only code:
+  "def __repr__",
+  "if self.debug",
+  # Don't complain if tests don't hit defensive assertion code:
+  # "raise AssertionError",
+  "raise NotImplementedError",
+  # Don't complain if non-runnable code isn't run:
+  "if __name__ == .__main__.:",
+  "if TYPE_CHECKING:"
+]
+ignore_errors = true
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+
+[tool.ruff]
+indent-width = 4
+line-length = 88
+target-version = 'py313'
+
+[tool.ruff.format]
+quote-style = 'single'
+
+[tool.ruff.lint]
+ignore = []
+preview = true
+select = [
+  'A',  # flake8-builtins
+  'ANN',  # flake8-annotations
+  'ASYNC',  # flake8-async
+  'B',  # flake8-bugbear
+  'BLE',  # flake8-blind-except
+  'C4',  # flake8-comprehensions
+  'COM',  # flake8-commas
+  'D',  # pydocstyle
+  'E',  # pycodestyle
+  'F',  # Pyflakes
+  'FBT',  # flake8-boolean-trap
+  'I',  # isort
+  'ICN',  # flake8-import-conventions
+  'INP',  # flake8-no-pep420
+  'ISC',  # flake8-implicit-str-concat
+  'N',  # pep8-naming
+  'PIE',  # flake8-pie
+  'PL',  # pylint
+  'PT',  # flake8-pytest-style
+  'Q',  # quotes
+  'RET',  # flake8-return
+  'RSE',  # flake8-raise
+  'RUF',  # Ruff-specific rules
+  'S',  # flake8-bandit
+  'SIM',  # flake8-simplify
+  'SLOT',  # flake8-slots
+  'T20',  # print search
+  'TD',  # flake8-todos
+  'UP',  # pyupgrade
+  'W',  # warning
+  'YTT'  # flake8-2020
+]
+
+[tool.ruff.lint.extend-per-file-ignores]
+'tests/**.py' = [
+  'S'
+]

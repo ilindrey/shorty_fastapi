@@ -1,0 +1,57 @@
+ci:
+  autofix_prs: false
+  autoupdate_branch: dev
+
+repos:
+- repo: https://github.com/pre-commit/mirrors-mypy
+  rev: 'v1.15.0'
+  hooks:
+  - id: mypy
+    additional_dependencies:
+    - pydantic
+
+- repo: https://github.com/pre-commit/pre-commit-hooks
+  rev: v5.0.0
+  hooks:
+  - id: trailing-whitespace
+  - id: end-of-file-fixer
+    exclude: ^.*\.egg-info/
+  - id: check-merge-conflict
+  - id: check-case-conflict
+  - id: check-json
+  - id: check-toml
+  - id: check-yaml
+  - id: pretty-format-json
+    args: [--autofix, --no-ensure-ascii, --no-sort-keys]
+    files: '\.json$'
+  - id: check-ast
+  - id: debug-statements
+  - id: check-docstring-first
+
+- repo: https://github.com/astral-sh/ruff-pre-commit
+  rev: v0.11.11
+  hooks:
+  - id: ruff
+    args:
+    - --fix
+    - --exit-non-zero-on-fix
+  - id: ruff-format
+
+- repo: https://github.com/hadialqattan/pycln
+  rev: v2.5.0
+  hooks:
+  - id: pycln
+    args: [--all]
+
+- repo: https://github.com/macisamuele/language-formatters-pre-commit-hooks
+  rev: v2.14.0
+  hooks:
+  - id: pretty-format-toml
+    args: [--autofix]
+    files: '\.toml$'
+  - id: pretty-format-yaml
+    args: [--autofix, --indent, '2', --preserve-quotes]
+- repo: https://github.com/pre-commit/pre-commit
+  rev: v4.2.0
+  hooks:
+  - id: validate_manifest
