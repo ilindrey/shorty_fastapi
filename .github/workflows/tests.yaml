@@ -1,0 +1,65 @@
+name: Tests
+
+on:
+  pull_request:
+    branches:
+    - main
+    - dev
+  push:
+    branches:
+    - main
+    - dev
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  testing:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v7.0.1
+
+    - name: Set up Python
+      uses: actions/setup-python@v6.2.0
+      with:
+        python-version: '3.14.7'
+        architecture: x64
+
+    - name: Set up uv
+      uses: astral-sh/setup-uv@v10.0.1
+      with:
+        version: '0.12.7'
+        enable-cache: true
+        cache-dependency-glob: uv.lock
+
+    - name: Install dependencies
+      run: |
+        uv sync --locked
+        uv pip install --python .venv/bin/python pre-commit==4.6.2
+
+    - name: Run linters
+      run: make linters
+
+    - name: Run isolated tests and deployment health checks
+      run: make tests
+
+    - name: Upload coverage reports to Codecov
+      uses: codecov/codecov-action@v7.0.0
+      with:
+        disable_search: true
+        fail_ci_if_error: true
+        files: ./coverage.xml
+        token: ${{ secrets.CODECOV_TOKEN }}
+
+    - name: Clean up isolated test services
+      if: always()
+      run: >-
+        docker compose -p shorty_tests -f compose.test.yaml
+        down --volumes --remove-orphans

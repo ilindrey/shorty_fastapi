@@ -6,17 +6,15 @@ services:
     command: >
       sh -c "alembic upgrade head &&
              uvicorn shorty.entrypoints.fastapi_app:app --host 0.0.0.0 --port 80"
-    ports:
-    - '8020:80'
     depends_on:
       postgres:
         condition: service_healthy
       redis:
         condition: service_healthy
-    environment: &application-environment
-      DATABASE_URL: postgresql+asyncpg://admin:pswd3131@postgres:5432/shorty
+    environment: &test-environment
+      DATABASE_URL: postgresql+asyncpg://test:test@postgres:5432/shorty_test
       REDIS_URL: redis://redis:6379/0
-      SESSION_SECRET_KEY: change-me
+      SESSION_SECRET_KEY: test-only-secret
       LINK_TTL_DAYS: 14
       CLEANUP_INTERVAL_MINUTES: 60
       CLEANUP_BATCH_SIZE: 100
@@ -26,9 +24,9 @@ services:
       - python
       - -c
       - "from urllib.request import urlopen; urlopen('http://localhost/health').read()"
-      interval: 5s
+      interval: 1s
       timeout: 5s
-      retries: 5
+      retries: 15
 
   scheduler:
     build:
@@ -39,37 +37,40 @@ services:
       api:
         condition: service_healthy
     environment:
-      <<: *application-environment
+      <<: *test-environment
+
+  tests:
+    build:
+      context: .
+      target: test
+    command: pytest --cov=shorty --cov-branch --cov-report=xml .
+    depends_on:
+      api:
+        condition: service_healthy
+    environment:
+      <<: *test-environment
+      DEPLOYED_API_URL: http://api
 
   postgres:
     image: postgres:18.6-alpine3.24
-    restart: always
-    ports:
-    - '5432:5432'
-    # Allocate shared memory when running with Docker Compose.
-    shm_size: 128mb
-    # For a Swarm stack, mount /dev/shm as a tmpfs volume instead.
-    # volumes:
-    # - type: tmpfs
-    #   target: /dev/shm
-    #   tmpfs:
-    #     size: 134217728 # 128 MiB
     environment:
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: pswd3131
-      POSTGRES_DB: shorty
+      POSTGRES_USER: test
+      POSTGRES_PASSWORD: test
+      POSTGRES_DB: shorty_test
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready"]
+      test: ["CMD-SHELL", "pg_isready -U test -d shorty_test"]
       interval: 1s
       timeout: 5s
       retries: 10
+    tmpfs:
+    - /var/lib/postgresql
 
   redis:
-    image: 'redis:8.10.1-alpine3.23'
-    ports:
-    - '16379:6379'
+    image: redis:8.10.1-alpine3.23
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 1s
       timeout: 5s
       retries: 10
+    tmpfs:
+    - /data

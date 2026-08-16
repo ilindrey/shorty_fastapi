@@ -1,6 +1,13 @@
-#[build-system]
-#build-backend = "pdm.pep517.api"
-#requires = ["pdm-pep517>=1.0.0"]
+[build-system]
+build-backend = "hatchling.build"
+requires = ["hatchling"]
+
+[dependency-groups]
+dev = [
+  "pytest==9.1.1",
+  "pytest-asyncio==1.4.0",
+  "pytest-cov==7.1.0"
+]
 
 [project]
 authors = [
@@ -12,31 +19,46 @@ classifiers = [
   "License :: OSI Approved :: MIT License",
   "Programming Language :: Python",
   "Programming Language :: Python :: 3",
-  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
   "Programming Language :: Python :: Implementation :: CPython",
   "Topic :: Internet :: WWW/HTTP",
   "Topic :: Software Development :: Libraries :: Application Frameworks",
   "Topic :: Software Development :: Libraries :: Python Modules"
 ]
 dependencies = [
-  "fastapi==0.115.12",
-  "pydantic==2.11.5"
+  "alembic==1.19.1",
+  "anyio==4.14.2",
+  "apscheduler==3.11.3",
+  "asyncpg==0.31.0",
+  "fastapi==0.141.1",
+  "httpx==0.28.1",
+  "itsdangerous==2.2.0",
+  "jinja2==3.1.6",
+  "pydantic==2.13.5",
+  "pydantic-settings==2.15.0",
+  "python-multipart==0.0.32",
+  "redis==8.1.0",
+  "sqlalchemy[asyncio]==2.0.52",
+  "uvicorn[standard]==0.52.4"
 ]
-description = "Python asynchronous I/O API client generator"
-dynamic = ["version"]
-keywords = ["async", "asyncio", "api", "fastapi"]
+description = "URL shortener service built on FastAPI"
+keywords = ["async", "asyncio", "api", "fastapi", "url-shortener"]
 license = {text = "MIT"}
-name = "shorty_fastapi"
+name = "shorty"
 readme = "README.md"
-requires-python = ">=3.13"
+requires-python = "==3.14.7"
+version = "0.1.0"
 
-[project.optional-dependencies]
-pydantic = []
+[tool.alembic]
+prepend_sys_path = ["%(here)s/src"]
+script_location = "%(here)s/alembic"
 
 [tool.coverage.report]
 # Regexes for lines to exclude from consideration
 exclude_lines = [
   "pragma: no cover",
+  # Abstract ports declare contracts rather than executable behavior:
+  "@abc.abstractmethod",
   # Don't complain about missing debug-only code:
   "def __repr__",
   "if self.debug",
@@ -47,21 +69,34 @@ exclude_lines = [
   "if __name__ == .__main__.:",
   "if TYPE_CHECKING:"
 ]
+fail_under = 100
 ignore_errors = true
 
+[tool.coverage.run]
+branch = true
+source = ["shorty"]
+
+[tool.mypy]
+explicit_package_bases = true
+mypy_path = "src:tests/unit"
+
+[[tool.mypy.overrides]]
+ignore_missing_imports = true
+module = ["apscheduler.*"]
+
 [tool.pytest.ini_options]
+asyncio_default_fixture_loop_scope = "function"
 asyncio_mode = "auto"
 
 [tool.ruff]
 indent-width = 4
 line-length = 88
-target-version = 'py313'
+target-version = 'py314'
 
 [tool.ruff.format]
 quote-style = 'single'
 
 [tool.ruff.lint]
-ignore = []
 preview = true
 select = [
   'A',  # flake8-builtins
@@ -70,7 +105,6 @@ select = [
   'B',  # flake8-bugbear
   'BLE',  # flake8-blind-except
   'C4',  # flake8-comprehensions
-  'COM',  # flake8-commas
   'D',  # pydocstyle
   'E',  # pycodestyle
   'F',  # Pyflakes
@@ -83,7 +117,6 @@ select = [
   'PIE',  # flake8-pie
   'PL',  # pylint
   'PT',  # flake8-pytest-style
-  'Q',  # quotes
   'RET',  # flake8-return
   'RSE',  # flake8-raise
   'RUF',  # Ruff-specific rules
@@ -98,6 +131,21 @@ select = [
 ]
 
 [tool.ruff.lint.extend-per-file-ignores]
-'tests/**.py' = [
-  'S'
+'alembic/**.py' = [
+  'INP001'  # Alembic scripts are not an importable package
 ]
+'tests/**.py' = [
+  'D',  # test names document behavior
+  'INP001',  # pytest directories do not need to be packages
+  'PLR2004',  # expected literals make assertions easier to read
+  'S'  # assertions and test credentials are expected in tests
+]
+'tests/unit/test_messagebus.py' = [
+  'RUF029'  # handlers must be async to satisfy the message bus contract
+]
+'tests/unit/test_scheduler.py' = [
+  'RUF029'  # handlers must be async to satisfy the message bus contract
+]
+
+[tool.ruff.lint.pydocstyle]
+convention = 'google'

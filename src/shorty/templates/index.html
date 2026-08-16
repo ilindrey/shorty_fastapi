@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Shorty</title>
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      max-width: 720px;
+      margin: 3rem auto;
+      padding: 0 1rem;
+      color: #1a1a1a;
+    }
+    h1 { font-size: 1.5rem; }
+    form.create {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+    }
+    form.create input[type="url"] { flex: 2; min-width: 12rem; }
+    form.create input[type="text"] { flex: 1; min-width: 8rem; }
+    input, button {
+      padding: 0.5rem;
+      font-size: 1rem;
+      box-sizing: border-box;
+    }
+    button { cursor: pointer; }
+    .error {
+      background: #fdecea;
+      color: #611a15;
+      border: 1px solid #f5c6cb;
+      padding: 0.5rem 0.75rem;
+      border-radius: 4px;
+      margin-bottom: 1rem;
+    }
+    table { width: 100%; border-collapse: collapse; }
+    th, td {
+      text-align: left;
+      padding: 0.5rem;
+      border-bottom: 1px solid #e0e0e0;
+      word-break: break-all;
+    }
+    th:last-child, td:last-child { text-align: right; white-space: nowrap; }
+    .empty { color: #666; padding: 1rem 0; }
+    .pagination { margin-top: 1rem; display: flex; gap: 1rem; align-items: center; }
+    .pagination a { text-decoration: none; }
+  </style>
+</head>
+<body>
+  <h1>Shorty</h1>
+
+  {% if error %}
+    <div class="error">{{ error }}</div>
+  {% endif %}
+
+  <form class="create" method="post" action="/links">
+    <input type="url" name="url" placeholder="https://example.com/very/long/url" required>
+    <input type="text" name="subpart" placeholder="custom subpart (optional)" minlength="3" maxlength="32">
+    <button type="submit">Shorten</button>
+  </form>
+
+  {% if links['items'] %}
+    <table>
+      <thead>
+        <tr>
+          <th>Original URL</th>
+          <th>Short link</th>
+          <th>Clicks</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in links['items'] %}
+        <tr>
+          <td><a href="{{ item.url }}" target="_blank" rel="noopener">{{ item.url }}</a></td>
+          <td><a href="{{ host }}{{ item.subpart }}" target="_blank" rel="noopener">{{ host }}{{ item.subpart }}</a></td>
+          <td>{{ item.clicks }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <div class="pagination">
+      {% if links.page > 1 %}
+        <a href="/?page={{ links.page - 1 }}">&laquo; Previous</a>
+      {% endif %}
+      <span>Page {{ links.page }}</span>
+      {% if links.page * links.page_size < links.total %}
+        <a href="/?page={{ links.page + 1 }}">Next &raquo;</a>
+      {% endif %}
+    </div>
+  {% else %}
+    <p class="empty">No shortened links yet.</p>
+  {% endif %}
+</body>
+</html>

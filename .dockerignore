@@ -1,0 +1,77 @@
+# Markdown sources are not required at runtime.
+*.md
+
+## Docker and version control ##
+.docker*
+.git*
+compose*.yaml
+docker-compose*.yaml
+Dockerfile*
+
+## Development tools ##
+.claude/
+.serena/
+.idea/*
+.vscode/*
+*.code-workspace
+.history/
+Makefile
+
+## Python ##
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+.python-version
+.venv/
+venv/
+__pypackages__/
+
+## Tests, coverage and linters ##
+.coverage
+.coverage.*
+coverage*.xml
+htmlcov/
+.pytest_cache/
+pytestdebug.log
+.mypy_cache/
+.dmypy.json
+dmypy.json
+.ruff/
+.ruff_cache/
+
+## Operating systems ##
+*~
+.fuse_hidden*
+.directory
+.Trash-*
+.nfs*
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+*.stackdump
+[Dd]esktop.ini
+$RECYCLE.BIN/
