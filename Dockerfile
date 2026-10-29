@@ -1,7 +1,7 @@
-FROM python:3.14.7-alpine3.24 AS base
+FROM python:3.15.2-alpine3.24 AS base
 FROM base AS production-builder
 
-COPY --from=ghcr.io/astral-sh/uv:0.12.7 /uv /uvx /bin/
+COPY --from=ghcr.io/astral-sh/uv:0.13.6 /uv /uvx /bin/
 ENV \
     UV_CACHE_DIR=/cache \
     UV_COMPILE_BYTECODE=1 \

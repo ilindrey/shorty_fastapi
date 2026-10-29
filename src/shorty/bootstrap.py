@@ -1,7 +1,7 @@
 """Composition root for the application and its adapters."""
 
 import inspect
-from collections.abc import AsyncIterator, Callable
+from collections.abc import AsyncGenerator, Callable
 from contextlib import asynccontextmanager
 from dataclasses import dataclass
 from datetime import datetime
@@ -131,7 +131,9 @@ def bootstrap_application(
 
 
 @asynccontextmanager
-async def application_runtime(settings: Settings) -> AsyncIterator[ShortyApplication]:
+async def application_runtime(
+    settings: Settings,
+) -> AsyncGenerator[ShortyApplication]:
     """Create and close the infrastructure used by an entrypoint."""
     engine = create_async_engine(
         settings.database_url,

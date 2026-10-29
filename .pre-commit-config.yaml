@@ -3,29 +3,35 @@ ci:
   autoupdate_branch: dev
 
 repos:
-- repo: https://github.com/pre-commit/mirrors-mypy
-  rev: 'v2.3.1'
+- repo: local
   hooks:
   - id: mypy
+    name: mypy
+    entry: mypy
+    language: python
+    types_or: [python, pyi]
+    args: [--ignore-missing-imports, --scripts-are-modules]
+    require_serial: true
     additional_dependencies:
-    - alembic==1.19.1
-    - anyio==4.14.2
+    - mypy==2.4.1
+    - alembic==1.20.1
+    - anyio==4.15.1
     - apscheduler==3.11.3
-    - asyncpg==0.31.0
-    - fastapi==0.141.1
+    - asyncpg==0.32.0
+    - fastapi==0.162.0
     - httpx==0.28.1
     - itsdangerous==2.2.0
     - jinja2==3.1.6
-    - pydantic==2.13.5
-    - pydantic-settings==2.15.0
-    - pytest==9.1.1
-    - pytest-asyncio==1.4.0
+    - pydantic==2.14.1
+    - pydantic-settings==2.16.2
+    - pytest==9.2.0
+    - pytest-asyncio==1.4.1
     - pytest-cov==7.1.0
     - python-multipart==0.0.32
     - redis==8.1.0
-    - sqlalchemy[asyncio]==2.0.52
-    - starlette==0.46.2
-    - uvicorn[standard]==0.52.4
+    - sqlalchemy[asyncio]==2.1.6
+    - starlette==1.10.0
+    - uvicorn[standard]==0.54.0
 
 - repo: https://github.com/pre-commit/pre-commit-hooks
   rev: v6.0.0
@@ -46,7 +52,7 @@ repos:
   - id: check-docstring-first
 
 - repo: https://github.com/astral-sh/ruff-pre-commit
-  rev: v0.16.5
+  rev: v0.17.3
   hooks:
   - id: ruff-check
     args:
@@ -69,6 +75,6 @@ repos:
   - id: pretty-format-yaml
     args: [--autofix, --indent, '2', --preserve-quotes]
 - repo: https://github.com/pre-commit/pre-commit
-  rev: v4.6.2
+  rev: v4.7.0
   hooks:
   - id: validate_manifest
