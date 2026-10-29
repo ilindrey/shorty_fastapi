@@ -1,7 +1,7 @@
 """Unit tests for FastAPI application lifecycle behavior."""
 
 import logging
-from collections.abc import AsyncIterator
+from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
 
 import pytest
@@ -17,7 +17,7 @@ async def test_lifespan_logs_successful_application_start(
     application = object()
 
     @asynccontextmanager
-    async def application_runtime(_settings: Settings) -> AsyncIterator[object]:
+    async def application_runtime(_settings: Settings) -> AsyncGenerator[object]:
         yield application
 
     monkeypatch.setattr(

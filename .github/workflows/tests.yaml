@@ -19,7 +19,7 @@ permissions:
 
 jobs:
   testing:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     timeout-minutes: 15
 
     steps:
@@ -27,31 +27,31 @@ jobs:
       uses: actions/checkout@v7.0.1
 
     - name: Set up Python
-      uses: actions/setup-python@v6.2.0
+      uses: actions/setup-python@v7.1.0
       with:
-        python-version: '3.14.7'
+        python-version: '3.15.2'
         architecture: x64
 
     - name: Set up uv
-      uses: astral-sh/setup-uv@v10.0.1
+      uses: astral-sh/setup-uv@v10.3.3
       with:
-        version: '0.12.7'
+        version: '0.13.6'
         enable-cache: true
         cache-dependency-glob: uv.lock
 
     - name: Install dependencies
       run: |
         uv sync --locked
-        uv pip install --python .venv/bin/python pre-commit==4.6.2
-
-    - name: Run linters
-      run: make linters
+        uv pip install --python .venv/bin/python pre-commit==4.7.0
 
     - name: Run isolated tests and deployment health checks
       run: make tests
 
+    - name: Run linters
+      run: make linters
+
     - name: Upload coverage reports to Codecov
-      uses: codecov/codecov-action@v7.0.0
+      uses: codecov/codecov-action@v7.1.1
       with:
         disable_search: true
         fail_ci_if_error: true

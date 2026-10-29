@@ -1,7 +1,7 @@
 """FastAPI application factory."""
 
 import logging
-from collections.abc import AsyncIterator
+from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
 from typing import cast
 
@@ -30,7 +30,7 @@ def _handle_invalid_subpart(_request: Request, exc: Exception) -> JSONResponse:
     error = cast('InvalidSubpartError', exc)
     return JSONResponse(
         {'detail': str(error)},
-        status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+        status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
     )
 
 
@@ -86,7 +86,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     runtime_settings = settings or Settings()
 
     @asynccontextmanager
-    async def lifespan(app: FastAPI) -> AsyncIterator[None]:
+    async def lifespan(app: FastAPI) -> AsyncGenerator[None]:
         """Create application dependencies and close them on shutdown."""
         async with application_runtime(runtime_settings) as application:
             app.state.application = application

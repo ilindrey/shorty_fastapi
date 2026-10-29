@@ -4,14 +4,14 @@ requires = ["hatchling"]
 
 [dependency-groups]
 dev = [
-  "pytest==9.1.1",
-  "pytest-asyncio==1.4.0",
+  "pytest==9.2.0",
+  "pytest-asyncio==1.4.1",
   "pytest-cov==7.1.0"
 ]
 
 [project]
 authors = [
-  {name = "Andrey Ilin", email = "andreyilin@fastmail.com"}
+  { name = "Andrey Ilin", email = "andreyilin@fastmail.com" }
 ]
 classifiers = [
   "Development Status :: 5 - Production/Stable",
@@ -19,34 +19,34 @@ classifiers = [
   "License :: OSI Approved :: MIT License",
   "Programming Language :: Python",
   "Programming Language :: Python :: 3",
-  "Programming Language :: Python :: 3.14",
+  "Programming Language :: Python :: 3.15",
   "Programming Language :: Python :: Implementation :: CPython",
   "Topic :: Internet :: WWW/HTTP",
   "Topic :: Software Development :: Libraries :: Application Frameworks",
   "Topic :: Software Development :: Libraries :: Python Modules"
 ]
 dependencies = [
-  "alembic==1.19.1",
-  "anyio==4.14.2",
+  "alembic==1.20.1",
+  "anyio==4.15.1",
   "apscheduler==3.11.3",
-  "asyncpg==0.31.0",
-  "fastapi==0.141.1",
+  "asyncpg==0.32.0",
+  "fastapi==0.162.0",
   "httpx==0.28.1",
   "itsdangerous==2.2.0",
   "jinja2==3.1.6",
-  "pydantic==2.13.5",
-  "pydantic-settings==2.15.0",
+  "pydantic==2.14.1",
+  "pydantic-settings==2.16.2",
   "python-multipart==0.0.32",
   "redis==8.1.0",
-  "sqlalchemy[asyncio]==2.0.52",
-  "uvicorn[standard]==0.52.4"
+  "sqlalchemy[asyncio]==2.1.6",
+  "uvicorn[standard]==0.54.0"
 ]
 description = "URL shortener service built on FastAPI"
 keywords = ["async", "asyncio", "api", "fastapi", "url-shortener"]
-license = {text = "MIT"}
+license = { text = "MIT" }
 name = "shorty"
 readme = "README.md"
-requires-python = "==3.14.7"
+requires-python = "==3.15.2"
 version = "0.1.0"
 
 [tool.alembic]
@@ -91,7 +91,7 @@ asyncio_mode = "auto"
 [tool.ruff]
 indent-width = 4
 line-length = 88
-target-version = 'py314'
+target-version = 'py315'
 
 [tool.ruff.format]
 quote-style = 'single'
